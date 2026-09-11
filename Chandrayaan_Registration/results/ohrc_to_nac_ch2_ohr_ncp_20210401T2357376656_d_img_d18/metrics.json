@@ -1,0 +1,30 @@
+{
+  "sensor": "ohrc",
+  "reference": "LRO_NAC",
+  "matcher": "SIFT-relaxed",
+  "reference_pixels": "preview_png_rapid_look",
+  "coarse_method": "sift_pyramid",
+  "source_pixels": "preview_png_rapid_look",
+  "inlier_matches": 76,
+  "final_inliers": 69,
+  "inlier_ratio": 0.9078947368421053,
+  "rmse": 0.6386324763298035,
+  "median_reprojection_error_px": 0.32276517152786255,
+  "uniform_grid_coverage": 0.609375,
+  "subpixel_pass_lt_1px": true,
+  "source_gsd_m": 0.26,
+  "reference_gsd_m": 1.6053232034765612,
+  "gsd_scale_source_to_reference": 0.16196115488577761,
+  "reference_roi_full_px": [
+    0,
+    0,
+    2532,
+    52224
+  ],
+  "source_roi_full_px": [
+    70,
+    0,
+    8105,
+    90148
+  ]
+}

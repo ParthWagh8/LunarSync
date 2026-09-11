@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Raw lunar products: GB-scale, never commit.
+# OHRC/TMC-2/IIRS: ISSDC PRADAN / https://chmapbrowse.issdc.gov.in/
+# LRO NAC/WAC: https://lroc.sese.asu.edu/  |  SELENE: JAXA archives
+*.img
+*.IMG
+
+# Generated products (reproducible via the notebooks)
+Preprocessed/
+Report/
+outputs/
+
+# Local screenshots / scratch (not part of the project)
+image*.png
+image.png
+
+# OS / editor
+.DS_Store
+.vscode/
