@@ -1,6 +1,15 @@
-# LunarSync
+<!-- Banner image: replace the src below with your banner file (e.g. /artifacts/banner.png) -->
+<p align="center">
+  <img src="/artifacts/banner.png" alt="LunarSync Banner" width="100%">
+</p>
 
 LunarSync is an system that aligns Chandrayaan-2 lunar images (OHRC/TMC/IIRS) with high resolution LRO NAC reference images despite differences in scale, viewing angle, and Sun illumination.
+
+<p align="center">
+  <img src="/artifacts/image1.png" alt="Source (OHRC/TMC-2/IIRS) registered to reference (LRO NAC) with SuperGlue matching" width="522">
+  <br>
+  <sub>Source (moving) Chandrayaan-2 imagery - OHRC, TMC-2 and IIRS - registered against a fixed LRO NAC reference; SuperGlue provides the initial keypoint matches.</sub>
+</p>
 
 It uses metadata guided overlap detection, scale normalization, feature matching, RANSAC verification, uniform point selection, and sub-pixel refinement to produce accurate pixel-to-pixel lunar image registration.
 
@@ -8,54 +17,19 @@ The project was developed for **Smart India Hackathon 2026** Problem Statement
 26166: Multi-modal, Sun angle and scale invariant image correspondence using
 Chandrayaan-2 optical images (OHRC, TMC-2 and IIRS).
 
+## Technical Approach:
 
-```text
-Source Product                  Reference Product
-      │                                │
-      ▼                                ▼
- Metadata Extraction             Metadata Extraction
-      │                                │
-      └──────────────┬─────────────────┘
-                     ▼
-              Geographic Overlap
-                     │
-                     ▼
-             Coarse Localization
-                     │
-                     ▼
-              Scale Normalization
-                     │
-                     ▼
-          Sensor Specific Enhancement
-                     │
-                     ▼
-          Coarse to Fine Matching
-                     │
-              ┌──────┴──────┐
-              ▼             ▼
-          SuperGlue        SIFT
-              │             │
-              └──────┬──────┘
-                     ▼
-             Geometric Verification
-                  (RANSAC)
-                     │
-                     ▼
-           Uniform Correspondence
-                  Selection
-                     │
-                     ▼
-             Sub Pixel Refinement
-                     │
-                     ▼
-             Final Transformation
-                     │
-                     ▼
-            Registered Image
-                     │
-                     ▼
-               Evaluation
-```               
+<p align="center">
+  <img src="/artifacts/image2.png" alt="LunarSync pipeline flowchart" width="100%">
+  <br>
+  <sub>End-to-end LunarSync pipeline: metadata-guided preprocessing, Sun-elevation-based illumination normalization, SuperPoint/SuperGlue matching with a SIFT fallback, RANSAC verification, uniform correspondence selection and sub-pixel refinement.</sub>
+</p>
+
+<p align="center">
+  <img src="/artifacts/image3.png" alt="NAC and OHRC preprocessing stage comparison" width="100%">
+  <br>
+  <sub>Preprocessing stages on the same patch: NAC reference (top) vs OHRC source (bottom) at the Original, Normalised, CLAHE, Inversion, Dilation and PCA steps.</sub>
+</p>
 
 ## Google Colab Run:
 We have implemented the modules in the form of python notebook and ran that on google colab's virtual environment with T4 GPU.
@@ -77,6 +51,8 @@ We tested the notebook with OHRC <-> NAC registration. We used two datasets, ch2
   </tr>
 </table>
 
+The source (OHRC) is a 1200 x 9014 px rapid-look preview at **0.26 m/px**, showing a heavily cratered lunar highland strip: a large dark patch in the upper third, dense small craters in the middle, and a bright-rimmed crater near the bottom. The reference (LRO NAC) is a 57 x 679 px preview of the same patch at **~1.61 m/px** - about **6.2x** coarser. Both are preview renders, not the full-resolution products.
+
 ### BEST RUN:
 On our best run we got:
 | Metric                      |         Result |
@@ -87,6 +63,35 @@ On our best run we got:
 | RMSE                        |    **0.64 px** |
 | Median reprojection error   |    **0.32 px** |
 | Uniform grid coverage       |     **60.94%** |
+
+## Registration Results:
+The pipeline saves each stage under `Chandrayaan_Registration/results/<run_name>/`. For the OHRC <-> NAC run, the key outputs are:
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="/Chandrayaan_Registration/results/ohrc_to_nac_ch2_ohr_ncp_20210401T2357376656_d_img_d18/reference_roi.png" width="150">
+      <br>
+      <b>1. Reference ROI (LRO NAC)</b>
+      <br>
+      The NAC reference cropped to the geographic overlap region selected from metadata. Same cratered highland strip at ~1.61 m/px, with the dark patch near the top and the bright-rimmed crater near the bottom.
+    </td>
+    <td align="center">
+      <img src="/Chandrayaan_Registration/results/ohrc_to_nac_ch2_ohr_ncp_20210401T2357376656_d_img_d18/coarse_warp.png" width="150">
+      <br>
+      <b>2. Coarse Warp (OHRC)</b>
+      <br>
+      The OHRC source after metadata-based coarse localization and scale normalization (0.26 m/px resampled into the reference frame), before fine matching. The terrain is already close to the reference, with residual shift and rotation.
+    </td>
+    <td align="center">
+      <img src="/Chandrayaan_Registration/results/ohrc_to_nac_ch2_ohr_ncp_20210401T2357376656_d_img_d18/registered_source.png" width="150">
+      <br>
+      <b>3. Registered Source (OHRC to NAC)</b>
+      <br>
+      The final sub-pixel registered output after SIFT matching, RANSAC verification, uniform point selection, and sub-pixel refinement. The reference terrain is accurately reproduced, with 69 inliers and 0.64 px RMSE.
+    </td>
+  </tr>
+</table>
 
 ## How to set-up the Input folders:
 For every source a seprate folder should be created and each patch will be stored as a folder and will be placed inside the relevent source folder. For every patch the minimum files required are,

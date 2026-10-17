@@ -22,6 +22,8 @@ outputs/
 # Local screenshots / scratch (not part of the project)
 image*.png
 image.png
+# ...except the README figures under artifacts/
+!artifacts/image*.png
 
 # OS / editor
 .DS_Store
